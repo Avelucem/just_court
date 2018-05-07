@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$USER_HOME$/exp/.idea/exp.iml" filepath="$USER_HOME$/exp/.idea/exp.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/just_court.iml" filepath="$PROJECT_DIR$/.idea/just_court.iml" />
-      <module fileurl="file://$USER_HOME$/just_motor/.idea/just_motor.iml" filepath="$USER_HOME$/just_motor/.idea/just_motor.iml" />
     </modules>
   </component>
 </project>

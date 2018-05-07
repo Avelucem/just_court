@@ -1,9 +1,5 @@
 from court_parce import app
-
-
 from flask import send_from_directory, render_template
-
-
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -21,4 +17,3 @@ def uploaded_file(filename):
 def download_exapmles(filename):
     return send_from_directory(app.config['DOWNLOAD'],
                                filename)
-

@@ -2,12 +2,10 @@ import os
 import threading
 from queue import Queue
 from bs4 import BeautifulSoup
-
+import sys
 import requests
 
-
-court_number = input('Введите код суда:')
-last_number = input('Введите код последенего автораспреедления:')
+court_number = sys.argv[1]
 s = requests.Session()
 try:
     open(os.path.abspath('dbcase/db_%s.txt' % court_number), 'r', encoding = 'utf-8')
@@ -19,14 +17,23 @@ except:
     x.close()
     y.close()
 
-f_read = open(os.path.abspath('dbcase/db_%s.txt' % court_number), 'r', encoding = 'utf-8')
+f_read = open(os.path.abspath('dbcase/db_%s.txt' % court_number), 'r', encoding='utf-8')
 url_logs = "http://court.gov.ua/logs.php"
 empty_url_str = '<h1>Звіти про автоматизований розподіл по справі №:  від 01.01.1970 </h1>'
+
+if len(sys.argv) != 2:
+    last_number = sys.argv[2]
+else:
+    text_read = open(os.path.abspath('download/text_%s.txt' % court_number), 'r', encoding='utf-8')
+    last_number = f_read.read().split('\n')[-2].split(';')[0]
+    text_read.close()
+
 
 class Downloader(threading.Thread):
     def __init__(self, queue):
         threading.Thread.__init__(self)
         self.queue = queue
+
     def run(self):
         while True:
             # Получаем url из очереди
@@ -35,6 +42,7 @@ class Downloader(threading.Thread):
             self.court(url)
             # Отправляем сигнал о том, что задача завершена
             self.queue.task_done()
+
     def court(self, url):
         inspector = s.get(url)
         inspector_soup = BeautifulSoup(inspector.content, 'lxml')
@@ -71,7 +79,7 @@ class Downloader(threading.Thread):
                     text_read.write(';')
                 text_read.write('\n')
                 text_read.close()
-                print('niceeeeeeeeeeeeeeeeeee %s'% url)
+                print('niceeeeeeeeeeeeeeeeeee %s' % url)
             else:
                 f = open(os.path.abspath('dbcase/db_stealth_%s.txt' % court_number), 'a+', encoding='utf-8')
                 f.write(url.split('/')[-3])
@@ -82,9 +90,10 @@ class Downloader(threading.Thread):
                 print('not very nice %s' % url)
         print(url)
 
+
 def main(urls):
     queue = Queue()
-    # Запускаем потом и очередь
+    # Запускаем очередь
     for i in range(20):
         t = Downloader(queue)
         t.setDaemon(True)
@@ -94,6 +103,7 @@ def main(urls):
         queue.put(url)
     # Ждем завершения работы очереди
     queue.join()
+
 
 list_urls = int(last_number)
 court_num = int(court_number)
