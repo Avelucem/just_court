@@ -25,7 +25,7 @@ if len(sys.argv) != 2:
     last_number = sys.argv[2]
 else:
     text_read = open(os.path.abspath('download/text_%s.txt' % court_number), 'r', encoding='utf-8')
-    last_number = f_read.read().split('\n')[-2].split(';')[0].split('/')[-3]
+    last_number = text_read.read().split('\n')[-2].split(';')[0].split('/')[-3]
     text_read.close()
 
 
